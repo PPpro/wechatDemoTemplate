@@ -1,42 +1,24 @@
 let canvas = wx.createCanvas();
 let ctx = canvas.getContext('2d');
+ctx.fillSyle = 'red';
+ctx.fillText('testset', 0, 0);
 
-let btnUtils = require('./btnUtils.js');
-btnUtils.initBtn(canvas, ctx);
+let a = wx.createInnerAudioContext();
+a.src = 'audio.mp3';
 
-let audios = [];
+a.onCanplay(() => {
+  
+  let a1 = wx.createInnerAudioContext();
+  a1.src = 'audio.mp3';
 
-btnUtils.registerTouchEvent({
-  play() {
-    this.stop();
-    
-    for (let i = 0; i < 10; ++i) {
-      let a = wx.createInnerAudioContext();
-      a.src = 'audio.mp3';
-      a.onCanplay(() => {
-        a.play();
-      })
-      audios.push(a);
-    }
-  },
+  a1.onCanplay(() => {
+    a1.play();
 
-  stop() {
-    audios.forEach(item => {
-      item.pause();
-      item.destroy();
-    });
-    audios.length = 0;
-  },
-
-  pause() {
-    audios.forEach(item => {
-      item.pause();
-    });
-  },
-
-  resume() {
-    audios.forEach(item => {
-      item.play();
-    });
-  },
+    wx.onHide(() => {
+      a1.pause();
+    })
+    wx.onShow(() => {
+      a1.play()
+    })
+  });
 })
